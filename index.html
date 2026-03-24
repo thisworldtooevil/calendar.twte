@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TWTE — 2026 Content Calendar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0a;
+  --bg2: #111111;
+  --bg3: #181818;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --text: #e8e6e0;
+  --text2: #888480;
+  --text3: #555250;
+  --accent: #c8ff00;
+  --accent2: #ff6b35;
+  --mono: 'IBM Plex Mono', monospace;
+  --serif: 'DM Serif Display', serif;
+  --red: #ff4444;
+  --amber: #f59e0b;
+  --gray: #555;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--bg); color: var(--text); font-family: var(--mono); font-size: 14px; }
+body { min-height: 100vh; }
+
+/* HEADER */
+.header {
+  border-bottom: 1px solid var(--border);
+  padding: 20px 28px 16px;
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 100;
+}
+.logo {
+  font-family: var(--serif);
+  font-size: 22px;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+}
+.logo span { color: var(--accent); font-style: italic; }
+.year-tag {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text3);
+  letter-spacing: .14em;
+  padding-top: 2px;
+}
+
+/* LAYOUT */
+.layout { display: flex; min-height: calc(100vh - 62px); }
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  padding: 20px 0;
+  position: sticky;
+  top: 62px;
+  height: calc(100vh - 62px);
+  overflow-y: auto;
+}
+.main { flex: 1; min-width: 0; padding: 20px 28px 60px; }
+
+/* SIDEBAR */
+.s-section { padding: 0 16px 20px; }
+.s-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .16em;
+  color: var(--text3);
+  margin-bottom: 8px;
+  display: block;
+}
+.s-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 6px 10px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text2);
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all .12s;
+  margin-bottom: 1px;
+}
+.s-btn:hover { background: var(--bg3); color: var(--text); }
+.s-btn.on { background: var(--bg3); color: var(--accent); }
+.s-divider { height: 1px; background: var(--border); margin: 4px 16px 16px; }
+.view-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.view-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text3);
+  flex-shrink: 0;
+  transition: background .12s;
+}
+.s-btn.on .view-dot { background: var(--accent); }
+
+/* FILTER ROW */
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.fp {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  padding: 4px 10px;
+  border-radius: 3px;
+  border: 1px solid var(--border2);
+  background: none;
+  color: var(--text3);
+  cursor: pointer;
+  transition: all .12s;
+}
+.fp:hover { border-color: var(--text2); color: var(--text2); }
+.fp.on { background: var(--bg3); border-color: var(--text2); color: var(--text); }
+.fp.on.f-augi { border-color: #4ade80; color: #4ade80; }
+.fp.on.f-twte { border-color: #f472b6; color: #f472b6; }
+.fp.on.f-high { border-color: var(--red); color: var(--red); }
+.fp.on.f-med { border-color: var(--amber); color: var(--amber); }
+
+/* RESULTS COUNT */
+.results-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.results-count { font-size: 11px; color: var(--text3); }
+.results-count b { color: var(--text2); font-weight: 500; }
+
+/* SPANNING */
+.span-block {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+.span-title { font-size: 9px; font-weight: 600; letter-spacing: .14em; color: var(--text3); margin-bottom: 8px; }
+.span-pills { display: flex; flex-wrap: wrap; gap: 5px; }
+.sp {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 3px 9px;
+  border-radius: 3px;
+  border: 1px solid;
+}
+
+/* WEEK VIEW HEADER */
+.week-header {
+  font-size: 11px;
+  color: var(--text3);
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.week-header b { color: var(--accent); font-weight: 500; }
+
+/* EVENT CARDS */
+.ev-list { display: flex; flex-direction: column; gap: 2px; }
+.ev-card {
+  border: 1px solid transparent;
+  border-radius: 6px;
+  transition: border-color .12s, background .12s;
+  overflow: hidden;
+}
+.ev-card:hover { border-color: var(--border2); background: var(--bg2); }
+.ev-card.expanded { border-color: var(--border2); background: var(--bg2); }
+.ev-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 12px;
+  cursor: pointer;
+}
+.pr-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+.pr-h { background: var(--red); }
+.pr-m { background: var(--amber); }
+.pr-l { background: var(--gray); }
+.ev-date {
+  min-width: 76px;
+  font-size: 11px;
+  color: var(--text3);
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+.ev-body { flex: 1; min-width: 0; }
+.ev-name { font-size: 13px; color: var(--text); line-height: 1.35; }
+.ev-note { font-size: 11px; color: var(--text3); margin-top: 2px; line-height: 1.4; }
+.ev-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 5px; }
+.tag {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  padding: 2px 7px;
+  border-radius: 2px;
+  border: 1px solid;
+}
+.tag-hol { border-color: #534AB7; color: #AFA9EC; }
+.tag-cul { border-color: #0F6E56; color: #5DCAA5; }
+.tag-pop { border-color: #854F0B; color: #EF9F27; }
+.tag-spo { border-color: #185FA5; color: #85B7EB; }
+.tag-mkt { border-color: #993C1D; color: #F0997B; }
+.tag-augi { border-color: #3B6D11; color: #97C459; }
+.tag-twte { border-color: #993556; color: #ED93B1; }
+.ev-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.copy-btn {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  padding: 3px 8px;
+  border-radius: 3px;
+  border: 1px solid var(--border2);
+  background: none;
+  color: var(--text3);
+  cursor: pointer;
+  transition: all .12s;
+  white-space: nowrap;
+}
+.copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+.copy-btn.copied { border-color: #4ade80; color: #4ade80; }
+.expand-icon { font-size: 10px; color: var(--text3); flex-shrink: 0; transition: transform .15s; }
+.ev-card.expanded .expand-icon { transform: rotate(180deg); }
+
+/* EXPANDED PANEL */
+.ev-expand {
+  display: none;
+  padding: 0 12px 12px 95px;
+}
+.ev-card.expanded .ev-expand { display: block; }
+.notes-label { font-size: 9px; font-weight: 600; letter-spacing: .12em; color: var(--text3); margin-bottom: 6px; }
+.notes-area {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 8px 10px;
+  resize: vertical;
+  min-height: 64px;
+  line-height: 1.5;
+  transition: border-color .12s;
+  outline: none;
+}
+.notes-area:focus { border-color: var(--accent); }
+.notes-area::placeholder { color: var(--text3); }
+.notes-saved {
+  font-size: 9px;
+  color: #4ade80;
+  margin-top: 4px;
+  height: 14px;
+  transition: opacity .3s;
+}
+
+/* BRIEF MODAL */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  width: 100%;
+  max-width: 560px;
+  padding: 24px;
+  position: relative;
+}
+.modal-title { font-family: var(--serif); font-size: 18px; margin-bottom: 4px; }
+.modal-sub { font-size: 11px; color: var(--text3); margin-bottom: 18px; }
+.brief-box {
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  padding: 14px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text2);
+  white-space: pre-wrap;
+  font-family: var(--mono);
+  margin-bottom: 16px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+.btn-primary {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  padding: 8px 18px;
+  border-radius: 4px;
+  border: none;
+  background: var(--accent);
+  color: #000;
+  cursor: pointer;
+  transition: opacity .12s;
+}
+.btn-primary:hover { opacity: .85; }
+.btn-secondary {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: 1px solid var(--border2);
+  background: none;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all .12s;
+}
+.btn-secondary:hover { border-color: var(--text2); color: var(--text); }
+.close-modal {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: var(--text3);
+  font-size: 18px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+/* EMPTY */
+.empty-state {
+  padding: 40px 0;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text3);
+}
+.empty-state div { font-family: var(--serif); font-size: 24px; color: var(--text3); margin-bottom: 8px; }
+
+/* MONTH GROUP HEADER */
+.month-group { margin-bottom: 4px; }
+.month-label {
+  font-family: var(--serif);
+  font-size: 13px;
+  color: var(--text3);
+  padding: 14px 0 6px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 6px;
+  font-style: italic;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">TWTE <span>&</span> Augi</div>
+  <div class="year-tag">2026 CONTENT CALENDAR</div>
+</header>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="s-section">
+      <span class="s-label">VIEW</span>
+      <button class="s-btn on" data-view="all" onclick="setView('all', this)">
+        <div class="view-tab"><span class="view-dot"></span>Full Year</div>
+      </button>
+      <button class="s-btn" data-view="week" onclick="setView('week', this)">
+        <div class="view-tab"><span class="view-dot"></span>This Week</div>
+      </button>
+      <button class="s-btn" data-view="14" onclick="setView('14', this)">
+        <div class="view-tab"><span class="view-dot"></span>Next 14 Days</div>
+      </button>
+      <button class="s-btn" data-view="30" onclick="setView('30', this)">
+        <div class="view-tab"><span class="view-dot"></span>Next 30 Days</div>
+      </button>
+    </div>
+
+    <div class="s-divider"></div>
+
+    <div class="s-section">
+      <span class="s-label">MONTH</span>
+      <button class="s-btn on" onclick="setMonth('All', this)">All months</button>
+      <button class="s-btn" onclick="setMonth('Jan', this)">January</button>
+      <button class="s-btn" onclick="setMonth('Feb', this)">February</button>
+      <button class="s-btn" onclick="setMonth('Mar', this)">March</button>
+      <button class="s-btn" onclick="setMonth('Apr', this)">April</button>
+      <button class="s-btn" onclick="setMonth('May', this)">May</button>
+      <button class="s-btn" onclick="setMonth('Jun', this)">June</button>
+      <button class="s-btn" onclick="setMonth('Jul', this)">July</button>
+      <button class="s-btn" onclick="setMonth('Aug', this)">August</button>
+      <button class="s-btn" onclick="setMonth('Sep', this)">September</button>
+      <button class="s-btn" onclick="setMonth('Oct', this)">October</button>
+      <button class="s-btn" onclick="setMonth('Nov', this)">November</button>
+      <button class="s-btn" onclick="setMonth('Dec', this)">December</button>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar" id="filterBar">
+      <span style="font-size:9px;font-weight:600;letter-spacing:.12em;color:var(--text3);padding-top:5px;margin-right:2px">TYPE</span>
+      <button class="fp on" data-ft="all" onclick="setFilter('type','all',this)">ALL</button>
+      <button class="fp" data-ft="hol" onclick="setFilter('type','hol',this)">HOLIDAY</button>
+      <button class="fp" data-ft="cul" onclick="setFilter('type','cul',this)">CULTURAL</button>
+      <button class="fp" data-ft="pop" onclick="setFilter('type','pop',this)">POP CULTURE</button>
+      <button class="fp" data-ft="spo" onclick="setFilter('type','spo',this)">SPORTS</button>
+      <button class="fp" data-ft="mkt" onclick="setFilter('type','mkt',this)">MARKETING</button>
+
+      <span style="font-size:9px;font-weight:600;letter-spacing:.12em;color:var(--text3);padding-top:5px;margin-left:8px;margin-right:2px">CLIENT</span>
+      <button class="fp on" data-fc="all" onclick="setFilter('client','all',this)">ALL</button>
+      <button class="fp f-augi" data-fc="augi" onclick="setFilter('client','augi',this)">AUGI</button>
+      <button class="fp f-twte" data-fc="twte" onclick="setFilter('client','twte',this)">TWTE</button>
+
+      <span style="font-size:9px;font-weight:600;letter-spacing:.12em;color:var(--text3);padding-top:5px;margin-left:8px;margin-right:2px">PRIORITY</span>
+      <button class="fp on" data-fp="all" onclick="setFilter('priority','all',this)">ALL</button>
+      <button class="fp f-high" data-fp="High" onclick="setFilter('priority','High',this)">HIGH</button>
+      <button class="fp f-med" data-fp="Medium" onclick="setFilter('priority','Medium',this)">MED</button>
+      <button class="fp" data-fp="Low" onclick="setFilter('priority','Low',this)">LOW</button>
+    </div>
+
+    <div class="results-bar">
+      <div class="results-count" id="resultsCount"></div>
+    </div>
+
+    <div id="content"></div>
+  </main>
+</div>
+
+<!-- BRIEF MODAL -->
+<div class="modal-overlay" id="briefModal">
+  <div class="modal">
+    <button class="close-modal" onclick="closeModal()">✕</button>
+    <div class="modal-title" id="modalTitle"></div>
+    <div class="modal-sub" id="modalSub"></div>
+    <div class="brief-box" id="briefContent"></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal()">Close</button>
+      <button class="btn-primary" id="modalCopyBtn" onclick="copyBrief()">Copy Brief</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CAT_LABELS = { hol:'Holiday', cul:'Cultural', pop:'Pop culture', spo:'Sports', mkt:'Marketing' };
+const CAT_CLS = { hol:'tag-hol', cul:'tag-cul', pop:'tag-pop', spo:'tag-spo', mkt:'tag-mkt' };
+const PR_CLS = { High:'pr-h', Medium:'pr-m', Low:'pr-l' };
+const SP_STYLE = {
+  hol:'border-color:#534AB7;color:#AFA9EC',
+  cul:'border-color:#0F6E56;color:#5DCAA5',
+  pop:'border-color:#854F0B;color:#EF9F27',
+  spo:'border-color:#185FA5;color:#85B7EB',
+  mkt:'border-color:#993C1D;color:#F0997B'
+};
+
+const MONTH_NUMS = {Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
+const MONTH_FULL = {Jan:'January',Feb:'February',Mar:'March',Apr:'April',May:'May',Jun:'June',Jul:'July',Aug:'August',Sep:'September',Oct:'October',Nov:'November',Dec:'December'};
+
+// Approximate date parsing for week-view filtering
+function parseEventDate(date, m) {
+  const yr = 2026;
+  const mn = MONTH_NUMS[m];
+  if (!mn) return null;
+  const s = String(date).trim();
+  if (/^\d+$/.test(s)) return new Date(yr, mn-1, parseInt(s));
+  const r = s.match(/^(\w+)\s+(\d+)/);
+  if (r) {
+    const mm = MONTH_NUMS[r[1]];
+    if (mm) return new Date(yr, mm-1, parseInt(r[2]));
+    return new Date(yr, mn-1, parseInt(r[2]));
+  }
+  const r2 = s.match(/(\d+)/);
+  if (r2) return new Date(yr, mn-1, parseInt(r2[1]));
+  return new Date(yr, mn-1, 15);
+}
+
+const DATA = [
+  // JANUARY
+  {id:'e1',date:'Jan 1',m:'Jan',name:"New Year's Day",type:'hol',dur:'day',note:'Health resolutions angle — strong emotional reset narrative for Augi',augi:1,twte:1,pr:'High'},
+  {id:'e2',date:'Jan 15',m:'Jan',name:'Blue Monday',type:'mkt',dur:'day',note:'Statistically most depressing day of the year — mental wellness content moment',augi:1,twte:0,pr:'Medium'},
+  {id:'e3',date:'Jan 19',m:'Jan',name:'Martin Luther King Jr. Day',type:'hol',dur:'day',note:'',augi:0,twte:1,pr:'High'},
+  {id:'e4',date:'Jan 19–25',m:'Jan',name:'Sundance Film Festival',type:'pop',dur:'multi',note:'Park City UT — indie film premieres, creative industry moment for TWTE',augi:0,twte:1,pr:'High'},
+  {id:'e5',date:'Jan 25',m:'Jan',name:'Grammy Awards',type:'pop',dur:'day',note:'Major cultural broadcast — music industry commentary angle',augi:0,twte:1,pr:'High'},
+  {id:'e6',date:'Jan 28',m:'Jan',name:'Data Privacy Day',type:'mkt',dur:'day',note:'Health data privacy angle for Augi',augi:1,twte:1,pr:'Medium'},
+  {id:'e7',date:'Jan',m:'Jan',name:'National Mentoring Month',type:'cul',dur:'month',note:'',augi:0,twte:0,pr:'Low'},
+  // FEBRUARY
+  {id:'e8',date:'Feb 2',m:'Feb',name:'Groundhog Day',type:'hol',dur:'day',note:'',augi:0,twte:1,pr:'Low'},
+  {id:'e9',date:'Feb 8',m:'Feb',name:'Super Bowl LX',type:'spo',dur:'day',note:'Half-time show and brand ad moment — biggest broadcast of the year',augi:0,twte:1,pr:'High'},
+  {id:'e10',date:'Feb 14',m:'Feb',name:"Valentine's Day",type:'hol',dur:'day',note:'Emotional wellness angle for Augi — self-love framing, not just romantic',augi:1,twte:1,pr:'High'},
+  {id:'e11',date:'Feb 16',m:'Feb',name:"Presidents' Day",type:'hol',dur:'day',note:'',augi:0,twte:0,pr:'Low'},
+  {id:'e12',date:'Feb 16–21',m:'Feb',name:'NBA All-Star Weekend',type:'spo',dur:'multi',note:'Cultural crossover moment — fashion, music, street culture',augi:0,twte:1,pr:'Medium'},
+  {id:'e13',date:'Feb 17',m:'Feb',name:'Random Acts of Kindness Day',type:'cul',dur:'day',note:'Community and wellness angle',augi:1,twte:0,pr:'Medium'},
+  {id:'e14',date:'Feb 22',m:'Feb',name:'NY Fashion Week',type:'pop',dur:'multi',note:'Spring/Summer collections — editorial and aesthetic commentary for TWTE',augi:0,twte:1,pr:'High'},
+  {id:'e15',date:'Feb 28',m:'Feb',name:'Rare Disease Day',type:'cul',dur:'day',note:'Health awareness',augi:1,twte:0,pr:'Medium'},
+  {id:'e16',date:'Feb',m:'Feb',name:'Black History Month',type:'cul',dur:'month',note:'Major cultural moment — relevant for both brands',augi:0,twte:1,pr:'High'},
+  {id:'e17',date:'Feb',m:'Feb',name:'American Heart Month',type:'cul',dur:'month',note:'Heart health — strong Augi content angle',augi:1,twte:0,pr:'High'},
+  // MARCH
+  {id:'e18',date:'Mar 2',m:'Mar',name:'98th Academy Awards',type:'pop',dur:'day',note:'Oscars ceremony — film commentary and visual culture moment for TWTE',augi:0,twte:1,pr:'High'},
+  {id:'e19',date:'Mar 7–16',m:'Mar',name:'SXSW Festival',type:'pop',dur:'multi',note:'Austin TX — music, film, tech, interactive. Creative industry premier event.',augi:0,twte:1,pr:'High'},
+  {id:'e20',date:'Mar 8',m:'Mar',name:"International Women's Day",type:'hol',dur:'day',note:'Major brand activation — plan early, brief Augi before March 1',augi:1,twte:1,pr:'High'},
+  {id:'e21',date:'Mar 20',m:'Mar',name:'Spring Equinox',type:'hol',dur:'day',note:'Seasonal reset content — renewal and growth narratives',augi:1,twte:1,pr:'Medium'},
+  {id:'e22',date:'Mar 21',m:'Mar',name:'World Poetry Day',type:'cul',dur:'day',note:'Language and creative expression angle',augi:0,twte:1,pr:'Medium'},
+  {id:'e23',date:'Mar 29',m:'Mar',name:'Earth Hour',type:'hol',dur:'day',note:'Global lights-off moment, 8:30 PM local time',augi:0,twte:1,pr:'Low'},
+  {id:'e24',date:'Mar 31',m:'Mar',name:'Transgender Day of Visibility',type:'cul',dur:'day',note:'',augi:1,twte:1,pr:'Medium'},
+  {id:'e25',date:'Mar',m:'Mar',name:"Women's History Month",type:'cul',dur:'month',note:'Major brand moment — IWD is the peak but full month has content opportunity',augi:1,twte:1,pr:'High'},
+  {id:'e26',date:'Mar',m:'Mar',name:'National Reading Month',type:'cul',dur:'month',note:'',augi:0,twte:0,pr:'Low'},
+  // APRIL
+  {id:'e27',date:'Apr 1',m:'Apr',name:"April Fools' Day",type:'hol',dur:'day',note:'Brand playfulness — only works if the joke is actually funny',augi:0,twte:1,pr:'Medium'},
+  {id:'e28',date:'Apr 7',m:'Apr',name:'World Health Day',type:'hol',dur:'day',note:'Core Augi activation — WHO announces a theme in advance. Plan a full content piece.',augi:1,twte:0,pr:'High'},
+  {id:'e29',date:'Apr 9–12',m:'Apr',name:'The Masters',type:'spo',dur:'multi',note:'Augusta National GA',augi:0,twte:0,pr:'Medium'},
+  {id:'e30',date:'Apr 10–12',m:'Apr',name:'Coachella Weekend 1',type:'pop',dur:'multi',note:'Indio CA — fashion, beauty, wellness crossover. High competition in feed. Build content ahead.',augi:1,twte:1,pr:'High'},
+  {id:'e31',date:'Apr 17–19',m:'Apr',name:'Coachella Weekend 2',type:'pop',dur:'multi',note:'Second wave — cultural conversation still running but fewer brands activating. This is the window. Post Weekend 1 analysis, aesthetic reaction, process content.',augi:1,twte:1,pr:'High'},
+  {id:'e32',date:'Apr 22',m:'Apr',name:'Earth Day',type:'hol',dur:'day',note:'Major brand activation — avoid greenwashing tone, go specific or go narrative',augi:1,twte:1,pr:'High'},
+  {id:'e33',date:'Apr 23',m:'Apr',name:'World Book Day',type:'cul',dur:'day',note:"Shakespeare's birthday — editorial angle",augi:0,twte:1,pr:'Medium'},
+  {id:'e34',date:'Apr',m:'Apr',name:'Earth Month',type:'hol',dur:'month',note:'Full month environmental content window',augi:1,twte:1,pr:'High'},
+  {id:'e35',date:'Apr',m:'Apr',name:'National Poetry Month',type:'cul',dur:'month',note:'',augi:0,twte:1,pr:'Medium'},
+  // MAY
+  {id:'e36',date:'May 2',m:'May',name:'Kentucky Derby',type:'spo',dur:'day',note:'Churchill Downs Louisville KY — fashion and cultural crossover',augi:0,twte:1,pr:'Medium'},
+  {id:'e37',date:'May 4',m:'May',name:'Star Wars Day',type:'pop',dur:'day',note:'"May the 4th be with you" — wide cultural relevance, easy content hook',augi:0,twte:1,pr:'Medium'},
+  {id:'e38',date:'May 4',m:'May',name:'Met Gala',type:'pop',dur:'day',note:'Biggest fashion moment of the year. Massive cultural conversation. TWTE visual commentary.',augi:0,twte:1,pr:'High'},
+  {id:'e39',date:'May 6',m:'May',name:'National Nurses Day',type:'hol',dur:'day',note:'Healthcare worker appreciation — Augi community angle',augi:1,twte:0,pr:'Medium'},
+  {id:'e40',date:'May 10',m:'May',name:"Mother's Day",type:'hol',dur:'day',note:"Major brand moment — women's health and caregiver angle for Augi",augi:1,twte:1,pr:'High'},
+  {id:'e41',date:'May 12–23',m:'May',name:'Cannes Film Festival',type:'pop',dur:'multi',note:'Cannes France — film, luxury brand, creative industry moment',augi:0,twte:1,pr:'High'},
+  {id:'e42',date:'May 25',m:'May',name:'Memorial Day',type:'hol',dur:'day',note:'Major US consumer moment — long weekend content',augi:0,twte:1,pr:'High'},
+  {id:'e43',date:'May',m:'May',name:'Mental Health Awareness Month',type:'cul',dur:'month',note:'CORE AUGI MONTH. Plan the full content calendar around this. 31 days of permission. Biggest opportunity on the entire calendar.',augi:1,twte:0,pr:'High'},
+  {id:'e44',date:'May',m:'May',name:'AAPI Heritage Month',type:'cul',dur:'month',note:'',augi:0,twte:1,pr:'Medium'},
+  // JUNE
+  {id:'e45',date:'Jun 5',m:'Jun',name:'World Environment Day',type:'hol',dur:'day',note:'',augi:1,twte:0,pr:'Medium'},
+  {id:'e46',date:'Jun 7',m:'Jun',name:'Tony Awards',type:'pop',dur:'day',note:'Major arts broadcast',augi:0,twte:1,pr:'Medium'},
+  {id:'e47',date:'Jun 15',m:'Jun',name:"Father's Day",type:'hol',dur:'day',note:"Men's health angle for Augi — build a content arc through Men's Health Month June 1–15",augi:1,twte:1,pr:'High'},
+  {id:'e48',date:'Jun 19',m:'Jun',name:'Juneteenth',type:'hol',dur:'day',note:'',augi:0,twte:1,pr:'High'},
+  {id:'e49',date:'Jun 20',m:'Jun',name:'Summer Solstice',type:'hol',dur:'day',note:'Seasonal transition content',augi:1,twte:1,pr:'Medium'},
+  {id:'e50',date:'Jun 21',m:'Jun',name:'World Music Day',type:'cul',dur:'day',note:'Fête de la Musique — underground music culture angle for TWTE',augi:0,twte:1,pr:'Medium'},
+  {id:'e51',date:'Jun 26',m:'Jun',name:'BET Awards',type:'pop',dur:'day',note:'Major Black culture broadcast moment',augi:0,twte:1,pr:'High'},
+  {id:'e52',date:'Jun',m:'Jun',name:'Pride Month',type:'cul',dur:'month',note:'Important for both brands — lead with specificity, not performative',augi:1,twte:1,pr:'High'},
+  {id:'e53',date:'Jun',m:'Jun',name:"Men's Health Month",type:'cul',dur:'month',note:'Strong Augi activation month — underutilized by most brands, wide open',augi:1,twte:0,pr:'High'},
+  // JULY
+  {id:'e54',date:'Jul 4',m:'Jul',name:'Independence Day',type:'hol',dur:'day',note:'Major US moment',augi:0,twte:1,pr:'High'},
+  {id:'e55',date:'Jul 18',m:'Jul',name:'Nelson Mandela Day',type:'cul',dur:'day',note:'67 minutes of service — community angle',augi:0,twte:1,pr:'Low'},
+  {id:'e56',date:'Jul 30',m:'Jul',name:'International Day of Friendship',type:'hol',dur:'day',note:'Community and social wellness angle',augi:1,twte:0,pr:'Low'},
+  {id:'e57',date:'Mid-Jul',m:'Jul',name:'Comic-Con San Diego',type:'pop',dur:'multi',note:'San Diego CA — massive cultural moment, IP reveals, fandom',augi:0,twte:1,pr:'High'},
+  {id:'e58',date:'Jul',m:'Jul',name:'Disability Pride Month',type:'cul',dur:'month',note:'Health and accessibility angle for Augi',augi:1,twte:0,pr:'Medium'},
+  {id:'e59',date:'Jul',m:'Jul',name:'BIPOC Mental Health Month',type:'cul',dur:'month',note:'Strong Augi angle — mental health within BIPOC communities',augi:1,twte:0,pr:'High'},
+  // AUGUST
+  {id:'e60',date:'Aug 12',m:'Aug',name:'International Youth Day',type:'cul',dur:'day',note:'',augi:1,twte:1,pr:'Low'},
+  {id:'e61',date:'Aug 19',m:'Aug',name:'World Photography Day',type:'cul',dur:'day',note:'CORE TWTE DATE. Owned moment. Plan something original — not a reblog.',augi:0,twte:1,pr:'High'},
+  {id:'e62',date:'Aug 26',m:'Aug',name:"Women's Equality Day",type:'cul',dur:'day',note:'',augi:1,twte:1,pr:'Medium'},
+  {id:'e63',date:'Late Aug',m:'Aug',name:'MTV VMAs',type:'pop',dur:'day',note:'Massive youth cultural moment — live reaction content',augi:0,twte:1,pr:'High'},
+  {id:'e64',date:'Late Aug',m:'Aug',name:'Burning Man',type:'pop',dur:'multi',note:'Black Rock City NV — countercultural moment, art and music intersection',augi:0,twte:1,pr:'Medium'},
+  {id:'e65',date:'Aug',m:'Aug',name:'National Black Business Month',type:'cul',dur:'month',note:'',augi:0,twte:1,pr:'Medium'},
+  // SEPTEMBER
+  {id:'e66',date:'Sep 7',m:'Sep',name:'Labor Day',type:'hol',dur:'day',note:'',augi:0,twte:1,pr:'Medium'},
+  {id:'e67',date:'Sep 22',m:'Sep',name:'Fall Equinox',type:'hol',dur:'day',note:'Seasonal transition — reset content, new quarter energy',augi:1,twte:1,pr:'Medium'},
+  {id:'e68',date:'Late Sep',m:'Sep',name:'New York Fashion Week',type:'pop',dur:'multi',note:"Spring/Summer collections — TWTE aesthetic commentary, Augi wellness industry parallel",augi:0,twte:1,pr:'High'},
+  {id:'e69',date:'Late Sep',m:'Sep',name:'Emmy Awards',type:'pop',dur:'day',note:'TV and streaming cultural moment',augi:0,twte:1,pr:'High'},
+  {id:'e70',date:'Sep 15–Oct 15',m:'Sep',name:'Hispanic Heritage Month',type:'cul',dur:'month',note:'',augi:0,twte:1,pr:'Medium'},
+  // OCTOBER
+  {id:'e71',date:'Oct 10',m:'Oct',name:'World Mental Health Day',type:'cul',dur:'day',note:'CORE AUGI ACTIVATION. Plan a major content piece — this is the flagship date after Mental Health Month. WHO announces theme in advance.',augi:1,twte:0,pr:'High'},
+  {id:'e72',date:'Oct 11',m:'Oct',name:'National Coming Out Day',type:'cul',dur:'day',note:'',augi:1,twte:1,pr:'Medium'},
+  {id:'e73',date:'Oct 12',m:'Oct',name:"Indigenous Peoples' Day",type:'hol',dur:'day',note:'',augi:0,twte:1,pr:'Medium'},
+  {id:'e74',date:'Late Oct',m:'Oct',name:'New York Comic Con',type:'pop',dur:'multi',note:'',augi:0,twte:1,pr:'Medium'},
+  {id:'e75',date:'Oct 31',m:'Oct',name:'Halloween',type:'hol',dur:'day',note:'Major creative moment — maximum latitude for TWTE',augi:0,twte:1,pr:'High'},
+  {id:'e76',date:'Oct',m:'Oct',name:'Breast Cancer Awareness Month',type:'cul',dur:'month',note:"Strong Augi content month — women's health, don't reduce to pink ribbon",augi:1,twte:0,pr:'High'},
+  {id:'e77',date:'Oct',m:'Oct',name:'LGBTQ+ History Month',type:'cul',dur:'month',note:'',augi:1,twte:1,pr:'Medium'},
+  // NOVEMBER
+  {id:'e78',date:'Nov 11',m:'Nov',name:'Veterans Day',type:'hol',dur:'day',note:'',augi:0,twte:1,pr:'Low'},
+  {id:'e79',date:'Nov 13',m:'Nov',name:'World Kindness Day',type:'cul',dur:'day',note:'Wellness and community angle',augi:1,twte:1,pr:'Medium'},
+  {id:'e80',date:'Nov 19',m:'Nov',name:"International Men's Day",type:'cul',dur:'day',note:"Men's health — strong angle for Augi, underutilized date",augi:1,twte:0,pr:'Medium'},
+  {id:'e81',date:'Nov 26',m:'Nov',name:'Thanksgiving',type:'hol',dur:'day',note:'Major US brand moment',augi:0,twte:1,pr:'High'},
+  {id:'e82',date:'Nov 27',m:'Nov',name:'Black Friday',type:'mkt',dur:'day',note:"Biggest shopping day of year — TWTE's angle is contrast, not discount",augi:0,twte:1,pr:'High'},
+  {id:'e83',date:'Nov 28',m:'Nov',name:'Cyber Monday',type:'mkt',dur:'day',note:'',augi:0,twte:1,pr:'High'},
+  {id:'e84',date:'Nov',m:'Nov',name:'Native American Heritage Month',type:'cul',dur:'month',note:'',augi:0,twte:1,pr:'Low'},
+  // DECEMBER
+  {id:'e85',date:'Dec 1',m:'Dec',name:'World AIDS Day',type:'cul',dur:'day',note:'Health awareness',augi:1,twte:0,pr:'Low'},
+  {id:'e86',date:'Dec 10',m:'Dec',name:'Human Rights Day',type:'hol',dur:'day',note:'',augi:0,twte:1,pr:'Low'},
+  {id:'e87',date:'Dec 21',m:'Dec',name:'Winter Solstice',type:'hol',dur:'day',note:'Reflection and renewal — year-end anchor content',augi:1,twte:1,pr:'Medium'},
+  {id:'e88',date:'Dec 25',m:'Dec',name:'Christmas Day',type:'hol',dur:'day',note:'Major brand moment',augi:0,twte:1,pr:'High'},
+  {id:'e89',date:'Dec 26',m:'Dec',name:'Kwanzaa begins',type:'cul',dur:'day',note:'',augi:0,twte:1,pr:'Low'},
+  {id:'e90',date:'Dec 31',m:'Dec',name:"New Year's Eve",type:'hol',dur:'day',note:'Year-end reflection — resolution and reset content for Augi',augi:1,twte:1,pr:'High'},
+];
+
+// STATE
+let view = 'all';
+let filterMonth = 'All';
+let filterType = 'all';
+let filterClient = 'all';
+let filterPriority = 'all';
+let currentBriefText = '';
+
+function setView(v, el) {
+  view = v;
+  document.querySelectorAll('.s-btn[data-view]').forEach(b => b.classList.remove('on'));
+  el.classList.add('on');
+  render();
+}
+
+function setMonth(m, el) {
+  filterMonth = m;
+  document.querySelectorAll('.s-btn:not([data-view])').forEach(b => b.classList.remove('on'));
+  el.classList.add('on');
+  render();
+}
+
+function setFilter(kind, val, el) {
+  if (kind === 'type') {
+    filterType = val;
+    document.querySelectorAll('[data-ft]').forEach(b => b.classList.remove('on'));
+    el.classList.add('on');
+  } else if (kind === 'client') {
+    filterClient = val;
+    document.querySelectorAll('[data-fc]').forEach(b => b.classList.remove('on'));
+    el.classList.add('on');
+  } else if (kind === 'priority') {
+    filterPriority = val;
+    document.querySelectorAll('[data-fp]').forEach(b => b.classList.remove('on'));
+    el.classList.add('on');
+  }
+  render();
+}
+
+function getDateRange() {
+  const now = new Date();
+  now.setHours(0,0,0,0);
+  if (view === 'week') {
+    const end = new Date(now);
+    end.setDate(end.getDate() + 7);
+    return {start: now, end};
+  } else if (view === '14') {
+    const end = new Date(now);
+    end.setDate(end.getDate() + 14);
+    return {start: now, end};
+  } else if (view === '30') {
+    const end = new Date(now);
+    end.setDate(end.getDate() + 30);
+    return {start: now, end};
+  }
+  return null;
+}
+
+function applyFilters(data) {
+  const range = getDateRange();
+  return data.filter(e => {
+    if (filterMonth !== 'All' && view === 'all' && e.m !== filterMonth) return false;
+    if (filterType !== 'all' && e.type !== filterType) return false;
+    if (filterClient === 'augi' && !e.augi) return false;
+    if (filterClient === 'twte' && !e.twte) return false;
+    if (filterPriority !== 'all' && e.pr !== filterPriority) return false;
+    if (range) {
+      const d = parseEventDate(e.date, e.m);
+      if (!d) return false;
+      if (d < range.start || d > range.end) return false;
+    }
+    return true;
+  });
+}
+
+function buildBrief(ev) {
+  const clients = [ev.augi ? 'Augi' : null, ev.twte ? 'TWTE' : null].filter(Boolean).join(', ');
+  const note = localStorage.getItem('note_' + ev.id) || '';
+  const noteSection = note ? `\nYOUR NOTES\n${note}\n` : '';
+  return `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CONTENT BRIEF — ${ev.name.toUpperCase()}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+DATE       ${ev.date}, 2026
+TYPE       ${CAT_LABELS[ev.type]}
+PRIORITY   ${ev.pr}
+CLIENT     ${clients || 'None assigned'}
+
+CONTEXT
+${ev.note || 'No context added yet.'}
+${noteSection}
+CONTENT ANGLES
+— 
+— 
+— 
+
+FORMATS
+□ Carousel
+□ Single image
+□ Reel / video
+□ Story
+□ Caption only
+
+DEADLINE
+[ Add your deadline here ]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Generated by TWTE 2026 Calendar`;
+}
+
+function openBrief(id) {
+  const ev = DATA.find(e => e.id === id);
+  if (!ev) return;
+  currentBriefText = buildBrief(ev);
+  document.getElementById('modalTitle').textContent = ev.name;
+  document.getElementById('modalSub').textContent = ev.date + ', 2026  ·  ' + CAT_LABELS[ev.type] + '  ·  ' + ev.pr + ' priority';
+  document.getElementById('briefContent').textContent = currentBriefText;
+  document.getElementById('briefModal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('briefModal').classList.remove('open');
+  const btn = document.getElementById('modalCopyBtn');
+  btn.textContent = 'Copy Brief';
+  btn.style.background = '';
+}
+
+function copyBrief() {
+  navigator.clipboard.writeText(currentBriefText).then(() => {
+    const btn = document.getElementById('modalCopyBtn');
+    btn.textContent = '✓ Copied';
+    btn.style.background = '#4ade80';
+    setTimeout(() => {
+      btn.textContent = 'Copy Brief';
+      btn.style.background = '';
+    }, 2000);
+  });
+}
+
+function toggleExpand(id) {
+  const card = document.getElementById('card_' + id);
+  if (!card) return;
+  card.classList.toggle('expanded');
+}
+
+function saveNote(id) {
+  const ta = document.getElementById('note_' + id);
+  if (!ta) return;
+  localStorage.setItem('note_' + id, ta.value);
+  const saved = document.getElementById('saved_' + id);
+  if (saved) {
+    saved.textContent = 'saved';
+    saved.style.opacity = '1';
+    setTimeout(() => saved.style.opacity = '0', 1500);
+  }
+}
+
+function formatDateRange() {
+  const range = getDateRange();
+  if (!range) return '';
+  const opts = {month:'short',day:'numeric'};
+  return range.start.toLocaleDateString('en-US', opts) + ' — ' + range.end.toLocaleDateString('en-US', opts) + ', 2026';
+}
+
+function render() {
+  const filtered = applyFilters(DATA);
+  const spanning = filtered.filter(e => e.dur === 'month');
+  const events = filtered.filter(e => e.dur !== 'month');
+  const total = events.length + spanning.length;
+
+  const range = getDateRange();
+  const countEl = document.getElementById('resultsCount');
+  if (range) {
+    countEl.innerHTML = `Showing <b>${events.length} event${events.length !== 1 ? 's' : ''}</b> · <b>${formatDateRange()}</b>`;
+  } else {
+    countEl.innerHTML = `<b>${events.length}</b> event${events.length !== 1 ? 's' : ''}${spanning.length ? ' + <b>' + spanning.length + '</b> month-long' : ''}`;
+  }
+
+  // Sidebar month buttons only active for full year view
+  document.querySelector('.sidebar').style.opacity = view !== 'all' ? '0.5' : '1';
+  document.querySelector('.sidebar').style.pointerEvents = view !== 'all' ? 'none' : '';
+  document.querySelectorAll('.s-btn[data-view]').forEach(b => {
+    b.style.opacity = ''; b.style.pointerEvents = '';
+  });
+  if (view !== 'all') {
+    document.querySelector('.sidebar').style.opacity = '';
+    document.querySelector('.sidebar').style.pointerEvents = '';
+    const monthBtns = document.querySelectorAll('.s-btn:not([data-view])');
+    monthBtns.forEach(b => { b.style.opacity = '0.35'; b.style.pointerEvents = 'none'; });
+  } else {
+    const monthBtns = document.querySelectorAll('.s-btn:not([data-view])');
+    monthBtns.forEach(b => { b.style.opacity = ''; b.style.pointerEvents = ''; });
+  }
+
+  let html = '';
+
+  // Spanning
+  if (spanning.length) {
+    html += `<div class="span-block"><div class="span-title">MONTH-LONG OBSERVANCES</div><div class="span-pills">`;
+    spanning.forEach(s => {
+      html += `<span class="sp" style="${SP_STYLE[s.type]}">${s.name}</span>`;
+    });
+    html += `</div></div>`;
+  }
+
+  if (!events.length) {
+    html += `<div class="empty-state"><div>—</div>No events match these filters.</div>`;
+    document.getElementById('content').innerHTML = html;
+    return;
+  }
+
+  // Group by month if showing all
+  if (view === 'all' && filterMonth === 'All') {
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    months.forEach(m => {
+      const mevents = events.filter(e => e.m === m);
+      if (!mevents.length) return;
+      html += `<div class="month-group">`;
+      html += `<div class="month-label">${MONTH_FULL[m]}</div>`;
+      html += `<div class="ev-list">`;
+      mevents.forEach(e => { html += renderCard(e); });
+      html += `</div></div>`;
+    });
+  } else {
+    html += `<div class="ev-list">`;
+    events.forEach(e => { html += renderCard(e); });
+    html += `</div>`;
+  }
+
+  document.getElementById('content').innerHTML = html;
+
+  // Restore notes
+  DATA.forEach(e => {
+    const ta = document.getElementById('note_' + e.id);
+    if (ta) {
+      const saved = localStorage.getItem('note_' + e.id);
+      if (saved) ta.value = saved;
+      ta.addEventListener('input', () => saveNote(e.id));
+    }
+  });
+}
+
+function renderCard(e) {
+  const clients = [e.augi ? '<span class="tag tag-augi">AUGI</span>' : '', e.twte ? '<span class="tag tag-twte">TWTE</span>' : ''].join('');
+  const note = localStorage.getItem('note_' + e.id) || '';
+  return `<div class="ev-card" id="card_${e.id}">
+    <div class="ev-main" onclick="toggleExpand('${e.id}')">
+      <div class="pr-dot ${PR_CLS[e.pr]}"></div>
+      <span class="ev-date">${e.date}</span>
+      <div class="ev-body">
+        <div class="ev-name">${e.name}</div>
+        ${e.note ? `<div class="ev-note">${e.note}</div>` : ''}
+        <div class="ev-tags"><span class="tag ${CAT_CLS[e.type]}">${CAT_LABELS[e.type].toUpperCase()}</span>${clients}</div>
+      </div>
+      <div class="ev-actions">
+        <button class="copy-btn" onclick="event.stopPropagation();openBrief('${e.id}')">BRIEF ↗</button>
+        <span class="expand-icon">▾</span>
+      </div>
+    </div>
+    <div class="ev-expand">
+      <div class="notes-label">YOUR NOTES</div>
+      <textarea class="notes-area" id="note_${e.id}" placeholder="Add content ideas, angles, or reminders for this date...">${note}</textarea>
+      <div class="notes-saved" id="saved_${e.id}" style="opacity:0">saved</div>
+    </div>
+  </div>`;
+}
+
+// Close modal on overlay click
+document.getElementById('briefModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+render();
+</script>
+</body>
+</html>
